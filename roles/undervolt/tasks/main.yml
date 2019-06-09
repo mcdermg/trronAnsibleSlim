@@ -1,0 +1,34 @@
+# roles/undervolt/tasks/main.yml
+---
+
+# Update system S/W
+- name: apt-get update
+  apt:
+    update-cache: yes
+
+# Disable under-voltage warning
+- name: Disable under-voltage warning
+  blockinfile:
+    path: /boot/config.txt
+    marker: "\n## {mark} added by ansible undervolt"
+    insertafter: EOF
+    block: |
+      # Disable under-voltage warning
+      avoid_warnings=1
+  register: task_result
+
+# Only reboots if git & omxplayer dependencies installed.
+- name: Reboot immediately if there was a change.
+  shell: "sleep 5 && sudo reboot now"
+  async: 1
+  poll: 0
+  when: task_result is changed
+
+# Wait for reboot and reconnection.
+- name: Wait for the reboot to complete if there was a change.
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 5
+    timeout: 350
+  when: task_result is changed

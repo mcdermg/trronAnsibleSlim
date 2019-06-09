@@ -1,0 +1,19 @@
+# roles/hostname/tasks/keyless.yml
+---
+
+- name: Creates SSH directory
+  file:
+    path: /home/pi/.ssh
+    state: directory
+    owner: pi
+    #group:
+    mode: 0700
+
+- name: Creates authorized_keys file
+  template:
+    #TODO ALTER THIS PATH TO POINT TO TEMPLATE FOLDER & AUTHORIZED_KEYS FILE
+    src: /home/mcdermg/repos/trronAnsible/templates/authorized_keys
+    dest: /home/pi/.ssh/authorized_keys
+    owner: pi
+    #group:
+    mode: 0600

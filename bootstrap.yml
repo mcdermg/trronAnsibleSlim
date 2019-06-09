@@ -1,0 +1,10 @@
+# ansible-playbook bootstrap.yml
+---
+
+- name: TRRON Raspberry Pi bootstrap
+  hosts: tnodes
+  become: yes
+  roles:
+     - set-hostname
+     - undervolt
+     #- keyless
